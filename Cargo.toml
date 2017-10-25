@@ -1,0 +1,6 @@
+[package]
+name = "bug_known_bits"
+version = "0.1.0"
+authors = ["Paul Masurel <pmasurel@indeed.com>"]
+
+[dependencies]
