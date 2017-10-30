@@ -1,22 +1,25 @@
+#![feature(core_intrinsics)]
 
-#[repr(u32)]
-pub enum BugEnum {
-    One = 1,
-    Two = 2,
-}
+extern crate core;
+use core::intrinsics::assume;
 
 #[inline(always)]
-pub fn from_u32(v: u32) -> BugEnum {
-    match v {
-        1u32 => BugEnum::One,
-        2u32 => BugEnum::Two,
-        _ => { panic!("") }
+pub fn from_u32(v: u32) -> Option<u32> {
+    if v >= 1 && v <= 2u32 {
+        Some(v)
+    } else {
+        None
     }
 }
 
-pub fn f(input: BugEnum) -> u32 {
-    let neg_input = !(input as u32);
-    let nval = from_u32(neg_input);
-    (nval as u32) | 1u32
+pub fn bugging_function(v: bool) -> u32 {
+    let input: u32 = if v { 1 } else { 2 };
+    if let Some(nval) =  from_u32(!input) {
+        unsafe {
+            assume(nval >= 1);
+            assume(nval <= 2);
+        }
+        return nval;
+    }
+    0u32
 }
-
